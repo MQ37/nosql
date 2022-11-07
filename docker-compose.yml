@@ -10,6 +10,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: toor
     ports:
       - 127.0.0.1:27017:27017
+    volumes:
+      - ./mongo_data:/data/db
 
   redis:
     image: redis

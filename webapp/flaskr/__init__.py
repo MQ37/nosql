@@ -14,7 +14,6 @@ def create_app(test_config=None):
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=False)
-        print(app.config)
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
@@ -27,8 +26,9 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
-    from . import faculties
-    app.register_blueprint(faculties.bp)
+    from . import orders, drivers
+    app.register_blueprint(orders.bp)
+    app.register_blueprint(drivers.bp)
     # a simple page that says hello
     @app.route('/hello')
     def hello():

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="POST">
+    <label for="customer">Customer:</label>
+    <input type="text" name="customer" id="customer">
+
+    <label for="driver">Choose driver:</label>
+    <input id="driver" list="drivers" name="driver">
+    <datalist id="drivers">
+        {% for driver in drivers %}
+        <option value="{{ driver.first_name }} {{ driver.last_name }} ({{ driver.id }})"></option>
+        {% endfor %}
+    </datalist>
+
+    <button type="submit">Add</button>
+</form>
+
+{% endblock %}

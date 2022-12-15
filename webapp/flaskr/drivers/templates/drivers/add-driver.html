@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Add driver</h3>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('drivers.add_driver')}}" method="post">
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="first_name">Name:</label>
+                <input class="form-control" type="text" id="first_name" name="first_name" required>
+            </div>
+            <div class="form-grou col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="last_name">Surname:</label>
+                <input class="form-control" type="text" id="last_name" name="last_name" required>
+            </div>
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="age">Age:</label>
+                <input class="form-control" type="number" id="age" name="age" min="0" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Add driver</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

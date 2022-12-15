@@ -4,10 +4,10 @@ from flask import (
     flash,
 )
 
-from flaskr.orders import bp
+from webapp.flaskr.orders import bp
 
-from flaskr.orders.models import Order
-from flaskr.drivers.models import Driver
+from webapp.flaskr.orders.models import Order
+from webapp.flaskr.drivers.models import Driver
 
 
 @bp.route("/")

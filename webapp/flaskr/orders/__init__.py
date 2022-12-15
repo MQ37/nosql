@@ -6,4 +6,4 @@ bp = Blueprint('orders',
                url_prefix='/orders')
 
 # Register views
-import flaskr.orders.views
+import webapp.flaskr.orders.views

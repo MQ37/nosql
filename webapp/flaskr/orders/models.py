@@ -1,5 +1,5 @@
-from flaskr.db import db
-from flaskr.drivers.models import Driver
+from webapp.flaskr.db import db
+from webapp.flaskr.drivers.models import Driver
 import datetime
 
 

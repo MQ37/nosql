@@ -1,4 +1,4 @@
-from flaskr.db import db
+from webapp.flaskr.db import db
 
 
 class Driver(db.Document):

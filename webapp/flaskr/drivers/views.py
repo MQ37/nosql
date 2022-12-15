@@ -17,6 +17,60 @@ def index_view():
     return render_template("drivers/index.html", drivers=drivers)
 
 
+@bp.route("/get")
+def get_view():
+    oid = request.args.get("oid")
+    error = None
+
+    if oid:
+        try:
+            drivers = [Driver.objects.get(pk=oid)]
+            msg = "Success"
+        except Exception:
+            msg = "Failed to fetch oid"
+            error = "invalid oid"
+            drivers = None
+
+    else:
+        drivers = list(Driver.objects)
+        msg = "Success"
+
+    return {
+        "msg": msg,
+        "error": error,
+        "data": drivers,
+    }
+
+
+@bp.route("/delete", methods=["POST", "DELETE"])
+def delete_view():
+    if request.method == "POST":
+        oid = request.form.get("oid")
+    elif request.method == "DELETE":
+        oid = request.args.get("oid")
+
+    error = None
+
+    if oid:
+        try:
+            # TODO: either remove all orders referencing driver or
+            # forbid deletion
+            driver = Driver.objects.get(pk=oid)
+            driver.delete()
+            msg = "Success"
+        except Exception:
+            msg = "Failed to delete oid"
+            error = "invalid oid"
+    else:
+        msg = "OID not specified"
+        error = "no oid"
+
+    return {
+        "msg": msg,
+        "error": error,
+    }
+
+
 @bp.route("/add", methods=["POST", "GET"])
 def add_view():
     if request.method == "POST":

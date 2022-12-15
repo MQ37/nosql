@@ -4,7 +4,7 @@
 
 <h1>Drivers table</h1>
 
-<table class="table">
+<table class="table" id="drivers-table">
     <thead>
     <tr>
         <th scope="col">#</th>
@@ -14,17 +14,78 @@
     </tr>
     </thead>
     <tbody>
+        {#
         {% for driver in drivers %}
         <tr>
-            <th scope="row">{{ driver.id }}</th>
-            <th>{{ driver.first_name }}</th>
-            <th>{{ driver.last_name }}</th>
-            <th> {{ driver.age }} </th>
+            <td scope="row">{{ driver.id }}</td>
+            <td>{{ driver.first_name }}</td>
+            <td>{{ driver.last_name }}</td>
+            <td> {{ driver.age }} </td>
         </tr>
         {% endfor %}
+        #}
     </tbody>
 </table>
 
 <a href="{{ url_for('drivers.add_view') }}" class="btn btn-primary">Add next driver</a>
+
+<script>
+
+    function deleteDriver(oid) {
+            fetch(`/drivers/delete?oid=${oid}`,
+                {
+                    method: "DELETE",
+                }
+                )
+                .then((response) => response.json())
+                .then((data) => {
+                        console.log(data);
+                        if (data.error === null) {
+                                console.log("Delete successful");
+                                updateDrivers();
+                            }
+                    });
+        }
+    function clearDriversTable() {
+        currentPerformances = [];
+
+        let table = document.getElementById("drivers-table");
+        let tbody = table.getElementsByTagName('tbody')[0];
+
+        tbody.innerHTML = "";
+    }
+    function updateDrivers(oid) {
+            fetch(`/drivers/get`)
+                .then((response) => response.json())
+                .then((data) => {
+                        console.log(data);
+                        if (data.error === null) {
+                                console.log("Driver get successful");
+                                clearDriversTable();
+                                let drivers = data.data;
+                                drivers.forEach( (driver) => {
+                                        addDriverToTable(driver);
+                                    });
+                            }
+                    });
+        }
+    function addDriverToTable(driver) {
+            let table = document.getElementById("drivers-table");
+            let tbody = table.getElementsByTagName('tbody')[0];
+
+            let row = tbody.insertRow();
+            row.insertCell().innerHTML = driver._id.$oid;
+            row.insertCell().innerHTML = driver.first_name;
+            row.insertCell().innerHTML = driver.last_name;
+            row.insertCell().innerHTML = driver.age;
+            row.insertCell().innerHTML = `
+               <button onclick="deleteDriver('${driver._id.$oid}');">DELETE</button>
+               `;
+        }
+
+    // MAIN
+    updateDrivers();
+
+</script>
 
 {% endblock %}

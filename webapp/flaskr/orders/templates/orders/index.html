@@ -4,4 +4,89 @@
 
 <h1>Orders index</h1>
 
+<table class="table" id="orders-table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Driver</th>
+            <th scope="col">Creation time</th>
+        </tr>
+    </thead>
+    <tbody>
+        {#
+        {% for order in orders %}
+        <tr>
+            <td scope="row">{{ order.id }}</td>
+            <td>{{ order.customer }}</td>
+            <td>{{ order.driver.id }}</td>
+            <td>{{ order.creation_time }}</td>
+            <td><button onclick="deleteOrder('{{ order.id }}');">DELETE</button></td>
+        </tr>
+        {% endfor %}
+        #}
+    </tbody>
+</table>
+
+<a href="{{ url_for('orders.add_view') }}" class="btn btn-primary">Create order</a>
+
+<script>
+
+    function deleteOrder(oid) {
+            fetch(`/orders/delete?oid=${oid}`,
+                {
+                    method: "DELETE",
+                }
+                )
+                .then((response) => response.json())
+                .then((data) => {
+                        console.log(data);
+                        if (data.error === null) {
+                                console.log("Delete successful");
+                                updateOrders();
+                            }
+                    });
+        }
+    function clearOrdersTable() {
+        currentPerformances = [];
+
+        let table = document.getElementById("orders-table");
+        let tbody = table.getElementsByTagName('tbody')[0];
+
+        tbody.innerHTML = "";
+    }
+    function updateOrders(oid) {
+            fetch(`/orders/get`)
+                .then((response) => response.json())
+                .then((data) => {
+                        console.log(data);
+                        if (data.error === null) {
+                                console.log("Order get successful");
+                                clearOrdersTable();
+                                let orders = data.data;
+                                orders.forEach( (order) => {
+                                        addOrderToTable(order);
+                                    });
+                            }
+                    });
+        }
+    function addOrderToTable(order) {
+            let table = document.getElementById("orders-table");
+            let tbody = table.getElementsByTagName('tbody')[0];
+
+            let row = tbody.insertRow();
+            row.insertCell().innerHTML = order._id.$oid;
+            row.insertCell().innerHTML = order.customer;
+            row.insertCell().innerHTML = order.driver.$oid;
+            row.insertCell().innerHTML = new Date(order.creation_time.$date).toLocaleString();
+            row.insertCell().innerHTML = `
+               <button onclick="deleteOrder('${order._id.$oid}');">DELETE</button>
+               `;
+        }
+
+    // MAIN
+    updateOrders();
+
+</script>
+
 {% endblock %}

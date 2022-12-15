@@ -2,19 +2,30 @@
 
 {% block content %}
 
-<form method="POST">
-    <label for="customer">Customer:</label>
-    <input type="text" name="customer" id="customer">
-
-    <label for="driver">Choose driver:</label>
-    <input id="driver" list="drivers" name="driver">
-    <datalist id="drivers">
-        {% for driver in drivers %}
-        <option value="{{ driver.first_name }} {{ driver.last_name }} ({{ driver.id }})"></option>
-        {% endfor %}
-    </datalist>
-
-    <button type="submit">Add</button>
-</form>
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Create order</h3>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('orders.add_view')}}" method="post">
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="customer">Customer:</label>
+                <input class="form-control" type="text" id="customer" name="customer" required>
+            </div>
+            <div class="form-grou col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="driver">Choose driver:</label>
+                <input class="form-control" type="text" id="driver" name="driver" list="drivers" required>
+                <datalist id="drivers">
+                    {% for driver in drivers %}
+                    <option value="{{ driver.first_name }} {{ driver.last_name }} ({{ driver.id }})"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Create order</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 {% endblock %}

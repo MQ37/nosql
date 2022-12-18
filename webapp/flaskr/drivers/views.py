@@ -3,6 +3,7 @@ from flask import (
     request,
     url_for,
     redirect,
+    flash
 )
 
 from webapp.flaskr.drivers import bp
@@ -87,6 +88,7 @@ def add_view():
         driver = Driver(first_name=first_name, last_name=last_name, age=age)
         driver.save()
 
+        flash("The driver has been successfully added to the database!", "success")
         return redirect(url_for("drivers.index_view"))
     else:
         return render_template("drivers/add-driver.html")

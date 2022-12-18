@@ -11,6 +11,7 @@
             <th scope="col">Customer</th>
             <th scope="col">Driver</th>
             <th scope="col">Creation time</th>
+            <th scope="col">Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -80,7 +81,7 @@
             row.insertCell().innerHTML = order.driver.$oid;
             row.insertCell().innerHTML = new Date(order.creation_time.$date).toLocaleString();
             row.insertCell().innerHTML = `
-               <button onclick="deleteOrder('${order._id.$oid}');">DELETE</button>
+               <button onclick="deleteOrder('${order._id.$oid}');" class="btn btn-danger">DELETE</button>
                `;
         }
 

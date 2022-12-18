@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Login</h3>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('users.login_view')}}" method="post">
+            {% if url_next %}
+                <input type="hidden" name="next" value={{ url_next }}>
+            {% endif %}
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="password">Username:</label>
+                <input class="form-control" type="text" id="username" name="username" minlength="4" required>
+            </div>
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="password">Password:</label>
+                <input class="form-control" type="password" id="password" name="password" minlength="4" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

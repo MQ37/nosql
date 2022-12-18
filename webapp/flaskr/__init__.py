@@ -1,8 +1,10 @@
 import os
 
 from flask import Flask, render_template
+from flask_session import Session
 
 from webapp.flaskr.db import db
+from webapp.flaskr.utils import bcrypt
 
 
 def create_app(test_config=None):
@@ -23,11 +25,14 @@ def create_app(test_config=None):
         pass
 
     db.init_app(app)
+    bcrypt.init_app(app)
+    Session(app)
 
     # register blueprints
-    from . import orders, drivers
+    from . import orders, drivers, users
     app.register_blueprint(orders.bp)
     app.register_blueprint(drivers.bp)
+    app.register_blueprint(users.bp)
 
     # index view
     @app.route('/')

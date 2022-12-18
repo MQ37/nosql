@@ -6,11 +6,13 @@ from flask import (
 )
 
 from webapp.flaskr.drivers import bp
+from webapp.flaskr.utils import login_required
 
 from webapp.flaskr.drivers.models import Driver
 
 
 @bp.route("/")
+@login_required
 def index_view():
     drivers = Driver.objects
 
@@ -18,6 +20,7 @@ def index_view():
 
 
 @bp.route("/get")
+@login_required
 def get_view():
     oid = request.args.get("oid")
     error = None
@@ -43,6 +46,7 @@ def get_view():
 
 
 @bp.route("/delete", methods=["POST", "DELETE"])
+@login_required
 def delete_view():
     if request.method == "POST":
         oid = request.form.get("oid")
@@ -72,6 +76,7 @@ def delete_view():
 
 
 @bp.route("/add", methods=["POST", "GET"])
+@login_required
 def add_view():
     if request.method == "POST":
         first_name = request.form["first_name"]

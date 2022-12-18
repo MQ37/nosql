@@ -1,7 +1,4 @@
-from flask import (render_template, Blueprint, request, redirect, url_for)
-
-from webapp.flaskr.drivers.models import Driver
-from webapp.flaskr.db import db
+from flask import Blueprint
 
 bp = Blueprint('drivers',
                __name__,
@@ -9,4 +6,4 @@ bp = Blueprint('drivers',
                url_prefix='/drivers')
 
 # Register views
-import webapp.flaskr.drivers.views
+from . import views

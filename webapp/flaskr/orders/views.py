@@ -7,12 +7,14 @@ from flask import (
 )
 
 from webapp.flaskr.orders import bp
+from webapp.flaskr.utils import login_required
 
 from webapp.flaskr.orders.models import Order
 from webapp.flaskr.drivers.models import Driver
 
 
 @bp.route("/")
+@login_required
 def index_view():
 
     orders = Order.objects
@@ -21,6 +23,7 @@ def index_view():
 
 
 @bp.route("/get")
+@login_required
 def get_view():
     oid = request.args.get("oid")
     error = None
@@ -46,6 +49,7 @@ def get_view():
 
 
 @bp.route("/delete", methods=["POST", "DELETE"])
+@login_required
 def delete_view():
     if request.method == "POST":
         oid = request.form.get("oid")
@@ -73,6 +77,7 @@ def delete_view():
 
 
 @bp.route("/add", methods=["GET", "POST"])
+@login_required
 def add_view():
 
     if request.method == "POST":
@@ -96,11 +101,9 @@ def add_view():
             order = Order(customer=customer, driver=driver)
             order.save()
             flash("Order created", "success")
-            print("Order created", "success")
             return redirect(url_for("orders.index_view"))
         else:
             flash("Please fill all fields", "error")
-            print("Please fill all fields", "error")
 
     # Get all drivers for form datalist
     drivers = Driver.objects

@@ -1,2 +1,18 @@
 {% extends "base.html" %}
 
+{% block content %}
+
+    <div class="card">
+        <div class="card-header text-center">
+            <h1 style="text-align: center">Welcome to the School Seminar Work Project!</h1>
+        </div>
+        <div class="card-body" style="text-align: center">
+            <p>This project is a web application built using Python Flask and utilizes several different databases, including Redis, MongoDB, and Neo4j.<br/>
+                The main focus of the project is to create a logistic app that helps find the optimal path for orders with drivers.</p>
+            <p><mark>Redis</mark> is used for storing user sessions, which allows the application to maintain state and track user activity as they navigate through the app.<br/></p>
+            <p><mark>MongoDB</mark> is used for storing user, driver, and order information. This allows the application to access and manipulate this data as needed in order to fulfill orders and manage the logistics of the system.<br/></p>
+            <p><mark>Neo4j</mark> is used to find the best path for orders by taking into account various factors such as distance, driver availability, and any constraints or preferences specified by the user. This helps to ensure that orders are routed efficiently and delivered in a timely manner.</p>
+        </div>
+    </div>
+
+{% endblock %}

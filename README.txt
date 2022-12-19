@@ -1,7 +1,7 @@
 NOSQL Webapp
 ============
 
- Simple webapp for delivery drivers and orders management
+ Simple webapp for delivery driver and order management
 
 How to run
 ==========

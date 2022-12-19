@@ -9,7 +9,7 @@
     <div class="card-body">
         <form action="{{ url_for('users.login_view')}}" method="post">
             {% if url_next %}
-                <input type="hidden" name="next" value={{ url_next }}>
+                <input type="hidden" name="next" value="{{ url_next }}">
             {% endif %}
             <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
                 <label for="password">Username:</label>

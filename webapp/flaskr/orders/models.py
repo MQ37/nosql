@@ -1,5 +1,4 @@
 from webapp.flaskr.db import db
-from webapp.flaskr.drivers.models import Driver
 import datetime
 
 
@@ -8,7 +7,7 @@ class Order(db.Document):
     customer = db.StringField(max_length=60)
     creation_time = db.DateTimeField()
 
-    driver = db.ReferenceField(Driver)
+    driver = db.ReferenceField("Driver")
 
     # Override save to add default creation_date
     def save(self, *args, **kwargs):

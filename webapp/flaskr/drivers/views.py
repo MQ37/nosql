@@ -9,6 +9,7 @@ from flask import (
 from webapp.flaskr.drivers import bp
 from webapp.flaskr.utils import login_required
 
+from webapp.flaskr.orders.models import Order
 from webapp.flaskr.drivers.models import Driver
 
 
@@ -58,14 +59,17 @@ def delete_view():
 
     if oid:
         try:
-            # TODO: either remove all orders referencing driver or
-            # forbid deletion
             driver = Driver.objects.get(pk=oid)
-            driver.delete()
-            msg = "Success"
-        except Exception:
+            orders = Order.objects(driver=driver).all()
+            if orders:
+                msg = "Cannot delete this driver, delete related orders first"
+                error = "remove related orders"
+            else:
+                driver.delete()
+                msg = "Success"
+        except Exception as ex:
             msg = "Failed to delete oid"
-            error = "invalid oid"
+            error = "operation failed"
     else:
         msg = "OID not specified"
         error = "no oid"

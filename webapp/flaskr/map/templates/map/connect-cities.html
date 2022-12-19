@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Create a highway between cities</h3>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('map.connect_cities_view')}}" method="post">
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="start">Start city:</label>
+                <select name="city1">
+                    {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="end">Destination city:</label>
+                <select name="city2">
+                    {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-sm-1 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="distance">Distance:</label>
+                <input class="form-control" type="number" min="0" id="distance" name="distance" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Connect cities</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

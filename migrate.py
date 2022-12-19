@@ -26,6 +26,6 @@ with driver.session() as session:
     # Create a highway node between the cities
     session.run(
       "MATCH (a:City {name: $city1}), (b:City {name: $city2}) " + 
-      "CREATE (a)<-[:IS_CONNECTED_TO]-(h:Highway {distance: $distance})-[:IS_CONNECTED_TO]->(b)",
+      "CREATE (a)<-[:CONNECTED_TO]-(h:Highway {distance: $distance})-[:CONNECTED_TO]->(b)",
       {"city1": city1, "city2": city2, "distance": distance}
     )

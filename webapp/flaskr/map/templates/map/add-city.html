@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Add city</h3>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('map.add_city_view')}}" method="post">
+            <div class="form-group col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="first_name">City name:</label>
+                <input class="form-control" type="text" id="city" name="city">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Add city</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

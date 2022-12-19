@@ -45,9 +45,9 @@ def login_view():
         # Validate form and create
         if username and password:
             user = User.login(username=username, password=password)
-            session["user"] = str(user.id)
-            session["username"] = user.username
             if user:
+                session["user"] = str(user.id)
+                session["username"] = user.username
                 flash("Logged in", "success")
                 if url_next:
                     return redirect(url_next)

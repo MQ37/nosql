@@ -96,3 +96,44 @@ def add_view():
         return redirect(url_for("drivers.index_view"))
     else:
         return render_template("drivers/add-driver.html")
+
+
+@bp.route("/update/<oid>", methods=["POST", "GET"])
+@login_required
+def update_view(oid):
+    if not oid:
+        return redirect(url_for("drivers.index_view"))
+
+    try:
+        driver = Driver.objects.get(pk=oid)
+    except Exception:
+        flash("This driver does not exist", "error")
+        return redirect(url_for("drivers.index_view"))
+
+    if request.method == "POST":
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        age = request.form.get("age")
+
+        if not first_name or not last_name or not age:
+            flash("Please fill all fields", "error")
+            return render_template("drivers/update.html", first_name=first_name,
+                                                        last_name=last_name,
+                                                        age=age)
+
+        driver.first_name = first_name
+        driver.last_name = last_name
+        driver.age = age
+        driver.save()
+
+        flash("Driver updated", "success")
+        return redirect(url_for("drivers.index_view"))
+
+    first_name = driver.first_name
+    last_name = driver.last_name
+    age = driver.age
+    return render_template("drivers/update.html", first_name=first_name,
+                                                last_name=last_name,
+                                                        age=age)
+
+

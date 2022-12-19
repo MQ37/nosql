@@ -12,19 +12,10 @@
         <th scope="col">Last name</th>
         <th scope="col">Age</th>
         <th scope="col">Delete</th>
+        <th scope="col">Update</th>
     </tr>
     </thead>
     <tbody>
-        {#
-        {% for driver in drivers %}
-        <tr>
-            <td scope="row">{{ driver.id }}</td>
-            <td>{{ driver.first_name }}</td>
-            <td>{{ driver.last_name }}</td>
-            <td> {{ driver.age }} </td>
-        </tr>
-        {% endfor %}
-        #}
     </tbody>
 </table>
 
@@ -81,6 +72,9 @@
             row.insertCell().innerHTML = driver.age;
             row.insertCell().innerHTML = `
                <button onclick="deleteDriver('${driver._id.$oid}');" class="btn btn-danger">DELETE</button>
+               `;
+            row.insertCell().innerHTML = `
+               <a href="/drivers/update/${driver._id.$oid}"><button class="btn btn-warning">Update</button></a>
                `;
         }
 

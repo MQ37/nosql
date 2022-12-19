@@ -12,6 +12,7 @@
             <th scope="col">Driver</th>
             <th scope="col">Creation time</th>
             <th scope="col">Delete</th>
+            <th scope="col">Update</th>
         </tr>
     </thead>
     <tbody>
@@ -82,6 +83,9 @@
             row.insertCell().innerHTML = new Date(order.creation_time.$date).toLocaleString();
             row.insertCell().innerHTML = `
                <button onclick="deleteOrder('${order._id.$oid}');" class="btn btn-danger">DELETE</button>
+               `;
+            row.insertCell().innerHTML = `
+               <a href="/orders/update/${order._id.$oid}"><button class="btn btn-warning">Update</button></a>
                `;
         }
 

@@ -10,5 +10,7 @@ MONGODB_SETTINGS = {
     "alias": "default",
 }
 SESSION_TYPE = "redis"
-SESSION_REDIS = redis.from_url("redis://%s:6379" % os.getenv("redis_host",
-                                                            "127.0.0.1"))
+SESSION_REDIS = redis.from_url("redis://%s:6379" %
+                               os.getenv("redis_host", "127.0.0.1"))
+NEO4J_USER = "neo4j"
+NEO4J_PASSWORD = "mypassword"

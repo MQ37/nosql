@@ -11,7 +11,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_mapping(SECRET_KEY='dev')
-    
+
     # config and test config
     if test_config is None:
         app.config.from_pyfile('config.py', silent=False)

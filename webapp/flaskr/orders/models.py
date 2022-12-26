@@ -6,6 +6,8 @@ class Order(db.Document):
 
     customer = db.StringField(max_length=60)
     creation_time = db.DateTimeField()
+    source = db.IntField()
+    target = db.IntField()
 
     driver = db.ReferenceField("Driver")
 

@@ -21,6 +21,20 @@
                     {% endfor %}
                 </datalist>
             </div>
+
+            <datalist id="cities">
+                {% for (city_id, city_name) in cities %}
+                <option value="{{ city_name }} ({{ city_id }})"></option>
+                {% endfor %}
+            </datalist>
+            <div class="form-grou col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="source">Choose source:</label>
+                <input class="form-control" type="text" id="source" name="source" list="cities" required>
+            </div>
+            <div class="form-grou col-sm-6 text-center" style="margin-left: auto;margin-right: auto;margin-top: 10px">
+                <label for="target">Choose target:</label>
+                <input class="form-control" type="text" id="target" name="target" list="cities" required>
+            </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Create order</button>
             </div>

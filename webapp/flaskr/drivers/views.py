@@ -1,10 +1,4 @@
-from flask import (
-    render_template,
-    request,
-    url_for,
-    redirect,
-    flash
-)
+from flask import (render_template, request, url_for, redirect, flash)
 
 from webapp.flaskr.drivers import bp
 from webapp.flaskr.utils import login_required
@@ -92,7 +86,8 @@ def add_view():
         driver = Driver(first_name=first_name, last_name=last_name, age=age)
         driver.save()
 
-        flash("The driver has been successfully added to the database!", "success")
+        flash("The driver has been successfully added to the database!",
+              "success")
         return redirect(url_for("drivers.index_view"))
     else:
         return render_template("drivers/add-driver.html")
@@ -117,9 +112,10 @@ def update_view(oid):
 
         if not first_name or not last_name or not age:
             flash("Please fill all fields", "error")
-            return render_template("drivers/update.html", first_name=first_name,
-                                                        last_name=last_name,
-                                                        age=age)
+            return render_template("drivers/update.html",
+                                   first_name=first_name,
+                                   last_name=last_name,
+                                   age=age)
 
         driver.first_name = first_name
         driver.last_name = last_name
@@ -132,8 +128,7 @@ def update_view(oid):
     first_name = driver.first_name
     last_name = driver.last_name
     age = driver.age
-    return render_template("drivers/update.html", first_name=first_name,
-                                                last_name=last_name,
-                                                        age=age)
-
-
+    return render_template("drivers/update.html",
+                           first_name=first_name,
+                           last_name=last_name,
+                           age=age)

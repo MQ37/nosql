@@ -16,4 +16,4 @@ format:
 migrate:
 	python migrate.py
 
-.PHONY: debug run format
+.PHONY: debug run format migrate run_macos run_macos_debug

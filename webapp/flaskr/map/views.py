@@ -7,7 +7,7 @@ from flask import (
 )
 
 from webapp.flaskr.map import bp
-from webapp.flaskr.db import neo4j
+from webapp.flaskr.db import graphdb
 from webapp.flaskr.utils import login_required
 
 
@@ -63,18 +63,18 @@ def connect_cities_view():
 
 # Get all cities
 def get_cities():
-    with neo4j.session() as session:
+    with graphdb.session() as session:
         result = session.run("MATCH (c:City) RETURN c.name")
         return [record["c.name"] for record in result]
 
 
 def create_city_if_not_exists(city):
-    with neo4j.session() as session:
+    with graphdb.session() as session:
         session.run("MERGE (c:City {name: $city})", {"city": city})
 
 
 def connect_cities(city1, city2, distance):
-    with neo4j.session() as session:
+    with graphdb.session() as session:
         session.run(
             "MATCH (c1:City {name: $city1}) "
             "MATCH (c2:City {name: $city2}) "
@@ -88,7 +88,7 @@ def connect_cities(city1, city2, distance):
 
 # find the shortest path between two cities
 def find_shortest_path(city1, city2):
-    with neo4j.session() as session:
+    with graphdb.session() as session:
         result = session.run(
             "MATCH (c1:City {name: $city1}), (c2:City {name: $city2}), p = shortestPath((c1)-[:CONNECTED_TO*]-(c2)) "
             "RETURN p", {

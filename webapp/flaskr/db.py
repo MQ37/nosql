@@ -5,5 +5,5 @@ from neo4j import GraphDatabase
 db = MongoEngine()
 
 # Neo4j
-neo4j = GraphDatabase.driver("bolt://localhost:7687",
-                             auth=(NEO4J_USER, NEO4J_PASSWORD))
+graphdb = GraphDatabase.driver("bolt://localhost:7687",
+                               auth=(NEO4J_USER, NEO4J_PASSWORD))

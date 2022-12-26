@@ -78,7 +78,7 @@
             let tbody = table.getElementsByTagName('tbody')[0];
 
             let row = tbody.insertRow();
-            row.insertCell().innerHTML = order._id.$oid;
+            row.insertCell().innerHTML = `<a href="/orders/detail/${order._id.$oid}">${order._id.$oid}</a>`;
             row.insertCell().innerHTML = order.customer;
             row.insertCell().innerHTML = order.driver.$oid;
             row.insertCell().innerHTML = new Date(order.creation_time.$date).toLocaleString();

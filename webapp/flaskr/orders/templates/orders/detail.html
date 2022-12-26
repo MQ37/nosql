@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Orders detail</h1>
+
+{{ order.pk }} - {{ source }} -> {{ target }} <br>
+
+Shortest path - {{ path }} <br>
+Length - {{ total_cost }} <br>
+
+{% endblock %}
+

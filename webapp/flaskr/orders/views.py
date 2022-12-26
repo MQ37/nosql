@@ -12,12 +12,13 @@ from webapp.flaskr.utils import login_required
 from webapp.flaskr.orders.models import Order
 from webapp.flaskr.drivers.models import Driver
 
-from webapp.flaskr.db import neo4j
+from webapp.flaskr.db import graphdb
+import neo4j
 
 # City map
 ID_CITY = {}
 CITY_ID = {}
-with neo4j.session() as session:
+with graphdb.session() as session:
     res = session.run("MATCH (n:City) RETURN n")
     for rec in res:
         node = rec.get("n")
@@ -263,3 +264,69 @@ def update_view(oid):
                            cities=cities,
                            source=source,
                            target=target)
+
+
+@bp.route("/detail/<oid>")
+@login_required
+def detail_view(oid):
+    if not oid:
+        return redirect(url_for("orders.index_view"))
+
+    try:
+        order = Order.objects.get(pk=oid)
+    except Exception:
+        flash("This order does not exist", "error")
+        return redirect(url_for("orders.index_view"))
+
+    with graphdb.session() as session:
+        cmd = """
+        MATCH (source:City), (target:City) WHERE ID(source)=%s AND ID(target)=%s
+        CALL gds.shortestPath.dijkstra.stream('highways', {
+            sourceNode: source,
+            targetNode: target,
+            relationshipWeightProperty: 'distance'
+        })
+        YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+        RETURN
+            index,
+            gds.util.asNode(sourceNode).name AS sourceNodeName,
+            gds.util.asNode(targetNode).name AS targetNodeName,
+            totalCost,
+            [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
+            costs,
+            nodes(path) as path
+        ORDER BY index
+        """ % (order.source, order.target)
+        try:
+            res = session.run(cmd)
+            rec = res.single()
+        # Projection does not exist
+        except neo4j.exceptions.ClientError:
+            res = session.run("""
+            CALL gds.graph.project(
+            'highways',
+            'City',
+            'HIGHWAY',
+            {
+            relationshipProperties: 'distance'
+            }
+            )
+            """)
+            res = session.run(cmd)
+            rec = res.single()
+
+        total_cost = rec["totalCost"]
+        path = []
+        for node in rec["path"]:
+            path.append(node["name"])
+        path = " -> ".join(path)
+
+    source = ID_CITY[order.source]
+    target = ID_CITY[order.target]
+
+    return render_template("orders/detail.html",
+                           order=order,
+                           source=source,
+                           target=target,
+                           path=path,
+                           total_cost=total_cost)

@@ -12,8 +12,9 @@
             <th scope="col">Driver</th>
             <th scope="col">Creation time</th>
             <th scope="col">Path</th>
-            <th scope="col">Delete</th>
+            <th scope="col">Detail</th>
             <th scope="col">Update</th>
+            <th scope="col">Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -78,17 +79,14 @@
             let tbody = table.getElementsByTagName('tbody')[0];
 
             let row = tbody.insertRow();
-            row.insertCell().innerHTML = `<a href="/orders/detail/${order._id.$oid}">${order._id.$oid}</a>`;
+            row.insertCell().innerHTML = `<a href="/orders/detail/${order._id.$oid}" title="Show order detail" style="text-decoration: auto; color: black;" onmouseover="this.style.textShadow='0px 0px 1px black'" onmouseout="this.style.textShadow='none'">${order._id.$oid}</a>`;
             row.insertCell().innerHTML = order.customer;
             row.insertCell().innerHTML = order.driver.$oid;
             row.insertCell().innerHTML = new Date(order.creation_time.$date).toLocaleString();
             row.insertCell().innerHTML = `${order.source} -> ${order.target}`;
-            row.insertCell().innerHTML = `
-               <button onclick="deleteOrder('${order._id.$oid}');" class="btn btn-danger">DELETE</button>
-               `;
-            row.insertCell().innerHTML = `
-               <a href="/orders/update/${order._id.$oid}"><button class="btn btn-warning">Update</button></a>
-               `;
+            row.insertCell().innerHTML = `<a href="/orders/detail/${order._id.$oid}"><button class="btn btn-info">Detail</button></a>`;
+            row.insertCell().innerHTML = `<a href="/orders/update/${order._id.$oid}"><button class="btn btn-warning">Update</button></a>`;
+            row.insertCell().innerHTML = `<button onclick="deleteOrder('${order._id.$oid}');" class="btn btn-danger">DELETE</button> `;
         }
 
     // MAIN

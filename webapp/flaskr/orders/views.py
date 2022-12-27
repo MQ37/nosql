@@ -30,7 +30,6 @@ with graphdb.session() as session:
 @bp.route("/")
 @login_required
 def index_view():
-
     orders = Order.objects
 
     return render_template("orders/index.html", orders=orders)
@@ -110,53 +109,14 @@ def delete_view():
 @login_required
 def add_view():
     if request.method == "POST":
-        customer = request.form.get("customer")
-        driver = request.form.get("driver")
-        source = request.form.get("source")
-        target = request.form.get("target")
-
-        # Get driver object
-        if driver:
-            driver_id = driver.split("(")
-            if driver_id:
-                driver_id = driver_id[-1].split(")")[0]
-                try:
-                    driver = Driver.objects.get(pk=driver_id)
-                except Exception:
-                    driver = None
-            else:
-                driver = None
-
-        # Get source
-        if source:
-            source_id = source.split("(")
-            if source_id:
-                source_id = source_id[-1].split(")")[0]
-                if source_id.isdigit():
-                    source = source_id
-                else:
-                    source = None
-            else:
-                source = None
-
-        # Get target
-        if target:
-            target_id = target.split("(")
-            if target_id:
-                target_id = target_id[-1].split(")")[0]
-                if target_id.isdigit():
-                    target = target_id
-                else:
-                    target = None
-            else:
-                target = None
+        order = order_fuc()
 
         # Validate form and create
-        if customer and driver and source and target:
-            order = Order(customer=customer,
-                          driver=driver,
-                          source=source,
-                          target=target)
+        if order["customer"] and order["driver"] and order["source"] and order["target"]:
+            order = Order(customer=order["customer"],
+                          driver=order["driver"],
+                          source=order["source"],
+                          target=order["target"])
             order.save()
             flash("Order created", "success")
             return redirect(url_for("orders.index_view"))
@@ -194,61 +154,22 @@ def update_view(oid):
     target = "%s (%s)" % (ID_CITY[order.target], order.target)
 
     if request.method == "POST":
-        customer = request.form.get("customer")
-        driver = request.form.get("driver")
-        source = request.form.get("source")
-        target = request.form.get("target")
+        order_dic = order_fuc()
 
-        # Get driver object
-        if driver:
-            driver_id = driver.split("(")
-            if driver_id:
-                driver_id = driver_id[-1].split(")")[0]
-                try:
-                    driver = Driver.objects.get(pk=driver_id)
-                except Exception:
-                    driver = None
-            else:
-                driver = None
-
-        # Get source
-        if source:
-            source_id = source.split("(")
-            if source_id:
-                source_id = source_id[-1].split(")")[0]
-                if source_id.isdigit():
-                    source = source_id
-                else:
-                    source = None
-            else:
-                source = None
-
-        # Get target
-        if target:
-            target_id = target.split("(")
-            if target_id:
-                target_id = target_id[-1].split(")")[0]
-                if target_id.isdigit():
-                    target = target_id
-                else:
-                    target = None
-            else:
-                target = None
-
-        if not customer or not driver or not source or not target:
+        if not order_dic["customer"] or not order_dic["driver"] or not order_dic["source"] or not order_dic["target"]:
             flash("Please fill all fields", "error")
             return render_template("orders/update.html",
-                                   customer=customer,
-                                   driver=driver,
+                                   customer=order["customer"],
+                                   driver=order["driver"],
                                    drivers=drivers,
                                    cities=cities,
                                    source=source,
                                    target=target)
 
-        order.customer = customer
-        order.driver = driver
-        order.source = source
-        order.target = target
+        order.customer = order_dic["customer"]
+        order.driver = order_dic["driver"]
+        order.source = order_dic["source"]
+        order.target = order_dic["target"]
         order.save()
 
         flash("Order updated", "success")
@@ -326,7 +247,61 @@ def detail_view(oid):
 
     return render_template("orders/detail.html",
                            order=order,
+                           customer=order.customer,
+                           driver=[order.driver.first_name, order.driver.last_name],
                            source=source,
                            target=target,
                            path=path,
                            total_cost=total_cost)
+
+
+def order_fuc():
+    order = {}
+
+    customer = request.form.get("customer")
+    driver = request.form.get("driver")
+    source = request.form.get("source")
+    target = request.form.get("target")
+
+    # Get driver object
+    if driver:
+        driver_id = driver.split("(")
+        if driver_id:
+            driver_id = driver_id[-1].split(")")[0]
+            try:
+                driver = Driver.objects.get(pk=driver_id)
+            except Exception:
+                driver = None
+        else:
+            driver = None
+
+    # Get source
+    if source:
+        source_id = source.split("(")
+        if source_id:
+            source_id = source_id[-1].split(")")[0]
+            if source_id.isdigit():
+                source = source_id
+            else:
+                source = None
+        else:
+            source = None
+
+    # Get target
+    if target:
+        target_id = target.split("(")
+        if target_id:
+            target_id = target_id[-1].split(")")[0]
+            if target_id.isdigit():
+                target = target_id
+            else:
+                target = None
+        else:
+            target = None
+
+    order['customer'] = customer
+    order['driver'] = driver
+    order['source'] = source
+    order['target'] = target
+
+    return order

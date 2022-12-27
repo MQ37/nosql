@@ -1,13 +1,31 @@
 {% extends "base.html" %}
 
+{% block above_container %}
+    <a href="{{ url_for('orders.index_view') }}" style="color: black; text-decoration: none;" onmouseover="this.style.textShadow='0px 0px 1px black'" onmouseout="this.style.textShadow='none'"><- Back</a>
+{% endblock %}
+
 {% block content %}
 
-<h1>Orders detail</h1>
+<div class="card">
+    <h5 class="card-header text-center py-3">
+        Order no. <strong>{{ order.pk }}</strong>
+    </h5>
+    <div class="card-body">
+        Customer:<br/>
+        {{ customer }}<br/>
+        Initial destination: <br/>
+        {{ source }} <br/>
+        Target destination:<br/>
+        {{ target }} <br/>
+        The shortest way found: <br/>
+        {{ path }} <br>
+        Total length: <br/>
+        {{ total_cost }} km <br>
+        Driver's name: <br/>
+        {{ driver[0] }} {{ driver[1] }}
+    </div>
+</div>
 
-{{ order.pk }} - {{ source }} -> {{ target }} <br>
-
-Shortest path - {{ path }} <br>
-Length - {{ total_cost }} <br>
 
 {% endblock %}
 

@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block above_container %}
+    <a href="{{ url_for('drivers.index_view') }}" style="color: black; text-decoration: none;" onmouseover="this.style.textShadow='0px 0px 1px black'" onmouseout="this.style.textShadow='none'"><- Back</a>
+{% endblock %}
+
 {% block content %}
 <div class="card">
     <div class="card-header text-center">

@@ -26,11 +26,11 @@ services:
      - 7474:7474
      - 7687:7687
    volumes:
-     - ./neo4j/conf:/conf
-     - ./neo4j/data:/data
-     - ./neo4j/import:/import
-     - ./neo4j/logs:/logs
-     - ./neo4j/plugins:/plugins
+     - ./neo4j_data/conf:/conf
+     - ./neo4j_data/data:/data
+     - ./neo4j_data/import:/import
+     - ./neo4j_data/logs:/logs
+     - ./neo4j_data/plugins:/plugins
    environment: 
      - NEO4J_AUTH=neo4j/mypassword
      # Raise memory limits

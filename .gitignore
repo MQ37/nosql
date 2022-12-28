@@ -12,5 +12,5 @@ build/
 *.egg-info/
 
 mongo_data/
-neo4j/
+neo4j_data/
 

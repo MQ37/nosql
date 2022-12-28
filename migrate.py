@@ -18,9 +18,6 @@ connected_cities = [("Prague", "Brno", 207), ("Brno", "Ostrava", 165),
 with driver.session() as session:
     # Empty the database
     session.run("MATCH (n) DETACH DELETE n")
-    # Drop graph projection
-    session.run("CALL gds.graph.drop('highways')")
-
 
     # Create city nodes if they don't exist
     for city1, city2, distance in connected_cities:
@@ -41,14 +38,3 @@ with driver.session() as session:
                 "distance": distance
             })
 
-    # Create projected graph for pathfinding
-    session.run("""
-    CALL gds.graph.project(
-    'highways',
-    'City',
-    'HIGHWAY',
-    {
-    relationshipProperties: 'distance'
-    }
-    )
-    """)

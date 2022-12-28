@@ -18,13 +18,21 @@ import neo4j
 # City map
 ID_CITY = {}
 CITY_ID = {}
-with graphdb.session() as session:
-    res = session.run("MATCH (n:City) RETURN n")
-    for rec in res:
-        node = rec.get("n")
-        if node:
-            CITY_ID[node["name"]] = node.id
-            ID_CITY[node.id] = node["name"]
+
+def fetch_cities():
+    global ID_CITY
+    global CITY_ID
+
+    ID_CITY = {}
+    city_ID = {}
+
+    with graphdb.session() as session:
+        res = session.run("MATCH (n:City) RETURN n")
+        for rec in res:
+            node = rec.get("n")
+            if node:
+                CITY_ID[node["name"]] = node.id
+                ID_CITY[node.id] = node["name"]
 
 
 @bp.route("/")
@@ -54,6 +62,7 @@ def get_view():
         orders = list(Order.objects)
         msg = "Success"
 
+    fetch_cities()
     # Convert
     orders = [{
         "_id": {
@@ -127,6 +136,7 @@ def add_view():
     # Get all drivers for form datalist
     drivers = Driver.objects
 
+    fetch_cities()
     # Get all cities
     cities = ID_CITY.items()
 
@@ -148,6 +158,7 @@ def update_view(oid):
     # Get all drivers for form datalist
     drivers = Driver.objects
 
+    fetch_cities()
     # Get all cities
     cities = ID_CITY.items()
 
@@ -244,6 +255,7 @@ def detail_view(oid):
             path.append(node["name"])
         path = " -> ".join(path)
 
+    fetch_cities()
     source = ID_CITY[order.source]
     target = ID_CITY[order.target]
 

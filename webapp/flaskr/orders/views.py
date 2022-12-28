@@ -112,7 +112,8 @@ def add_view():
         order = order_fuc()
 
         # Validate form and create
-        if order["customer"] and order["driver"] and order["source"] and order["target"]:
+        if order["customer"] and order["driver"] and order["source"] and order[
+                "target"]:
             order = Order(customer=order["customer"],
                           driver=order["driver"],
                           source=order["source"],
@@ -156,7 +157,8 @@ def update_view(oid):
     if request.method == "POST":
         order_dic = order_fuc()
 
-        if not order_dic["customer"] or not order_dic["driver"] or not order_dic["source"] or not order_dic["target"]:
+        if not order_dic["customer"] or not order_dic[
+                "driver"] or not order_dic["source"] or not order_dic["target"]:
             flash("Please fill all fields", "error")
             return render_template("orders/update.html",
                                    customer=order["customer"],
@@ -245,14 +247,15 @@ def detail_view(oid):
     source = ID_CITY[order.source]
     target = ID_CITY[order.target]
 
-    return render_template("orders/detail.html",
-                           order=order,
-                           customer=order.customer,
-                           driver=[order.driver.first_name, order.driver.last_name],
-                           source=source,
-                           target=target,
-                           path=path,
-                           total_cost=total_cost)
+    return render_template(
+        "orders/detail.html",
+        order=order,
+        customer=order.customer,
+        driver=[order.driver.first_name, order.driver.last_name],
+        source=source,
+        target=target,
+        path=path,
+        total_cost=total_cost)
 
 
 def order_fuc():

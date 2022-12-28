@@ -10,20 +10,14 @@
     <h5 class="card-header text-center py-3">
         Order no. <strong>{{ order.pk }}</strong>
     </h5>
-    <div class="card-body">
-        Customer:<br/>
-        {{ customer }}<br/>
-        Initial destination: <br/>
-        {{ source }} <br/>
-        Target destination:<br/>
-        {{ target }} <br/>
-        The shortest way found: <br/>
-        {{ path }} <br>
-        Total length: <br/>
-        {{ total_cost }} km <br>
-        Driver's name: <br/>
-        {{ driver[0] }} {{ driver[1] }}
-    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><span style="font-weight: bold">Customer:</span> {{ customer }}</li>
+        <li class="list-group-item"><span style="font-weight: bold">Initial destination:</span> {{ source }} </li>
+        <li class="list-group-item"><span style="font-weight: bold">Target destination:</span> {{ target }}</li>
+        <li class="list-group-item"><span style="font-weight: bold">The shortest way found:</span> {{ path }}</li>
+        <li class="list-group-item"><span style="font-weight: bold">Total length:</span> {{ total_cost }} km </li>
+        <li class="list-group-item"><span style="font-weight: bold">Driver's name:</span> {{ driver[0] }} {{ driver[1] }}</li>
+    </ul>
 </div>
 
 

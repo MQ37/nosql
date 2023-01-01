@@ -54,10 +54,17 @@ def connect_cities_view():
         city2 = request.form["city2"]
         distance = request.form["distance"]
 
+        # Validate that distnace is a number
+        try:
+            distance = int(distance)
+        except ValueError:
+            flash("Distance must be a number!", "danger")
+            return redirect(url_for("map.connect_cities_view"))
+
         # Create city nodes if they don't exist and connect them
         create_city_if_not_exists(city1)
         create_city_if_not_exists(city2)
-        connect_cities(city1, city2, distance)
+        connect_cities(city1, city2, int(distance))
 
         flash("Cities have been successfully connected!", "success")
         return redirect(url_for("map.index_view"))
@@ -83,7 +90,7 @@ def connect_cities(city1, city2, distance):
         session.run(
             "MATCH (c1:City {name: $city1}) "
             "MATCH (c2:City {name: $city2}) "
-            "MERGE (c1)<-[:CONNECTED_TO]-(h:Highway {distance: $distance})-[:CONNECTED_TO]->(c2)",
+            "MERGE (c1)-[r:HIGHWAY {distance: $distance}]->(c2)",
             {
                 "city1": city1,
                 "city2": city2,
@@ -94,6 +101,27 @@ def connect_cities(city1, city2, distance):
 # find the shortest path between two cities
 def find_shortest_path(city1, city2):
     with graphdb.session() as session:
+        res = session.run("""
+        CALL gds.graph.exists('highways')
+        """)
+        if res.single()["exists"]:
+            # Delete the projection if it exists
+            session.run("""
+            CALL gds.graph.drop('highways')
+            """)
+
+        # Create a new projection
+        res = session.run("""
+        CALL gds.graph.project(
+        'highways',
+        'City',
+        { HIGHWAY: {type: "HIGHWAY", orientation: "UNDIRECTED"}},
+        {
+        relationshipProperties: 'distance'
+        }
+        )
+        """)
+
         cmd = """
         MATCH (source:City {name: "%s"}), (target:City {name: "%s"})
         CALL gds.shortestPath.dijkstra.stream('highways', {
@@ -112,23 +140,11 @@ def find_shortest_path(city1, city2):
             nodes(path) as path
         ORDER BY index
         """ % (city1, city2)
-        try:
-            res = session.run(cmd)
-            rec = res.single()
-        # Projection does not exist
-        except neo4j.exceptions.ClientError:
-            res = session.run("""
-            CALL gds.graph.project(
-            'highways',
-            'City',
-            'HIGHWAY',
-            {
-            relationshipProperties: 'distance'
-            }
-            )
-            """)
-            res = session.run(cmd)
-            rec = res.single()
+
+        res = session.run(cmd)
+        rec = res.single()
+        
+        print("record", rec)
 
         return [node["name"] for node in rec["path"]], rec["totalCost"]
 

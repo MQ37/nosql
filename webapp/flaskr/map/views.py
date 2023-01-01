@@ -143,8 +143,6 @@ def find_shortest_path(city1, city2):
 
         res = session.run(cmd)
         rec = res.single()
-        
-        print("record", rec)
 
         return [node["name"] for node in rec["path"]], rec["totalCost"]
 

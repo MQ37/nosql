@@ -213,6 +213,27 @@ def detail_view(oid):
         return redirect(url_for("orders.index_view"))
 
     with graphdb.session() as session:
+        res = session.run("""
+        CALL gds.graph.exists('highways')
+        """)
+        if res.single()["exists"]:
+            # Delete the projection if it exists
+            session.run("""
+            CALL gds.graph.drop('highways')
+            """)
+
+        # Create a new projection
+        res = session.run("""
+        CALL gds.graph.project(
+        'highways',
+        'City',
+        { HIGHWAY: {type: "HIGHWAY", orientation: "UNDIRECTED"}},
+        {
+        relationshipProperties: 'distance'
+        }
+        )
+        """)
+
         cmd = """
         MATCH (source:City), (target:City) WHERE ID(source)=%s AND ID(target)=%s
         CALL gds.shortestPath.dijkstra.stream('highways', {
@@ -231,23 +252,9 @@ def detail_view(oid):
             nodes(path) as path
         ORDER BY index
         """ % (order.source, order.target)
-        try:
-            res = session.run(cmd)
-            rec = res.single()
-        # Projection does not exist
-        except neo4j.exceptions.ClientError:
-            res = session.run("""
-            CALL gds.graph.project(
-            'highways',
-            'City',
-            'HIGHWAY',
-            {
-            relationshipProperties: 'distance'
-            }
-            )
-            """)
-            res = session.run(cmd)
-            rec = res.single()
+     
+        res = session.run(cmd)
+        rec = res.single()
 
         total_cost = rec["totalCost"]
         path = []

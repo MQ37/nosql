@@ -9,7 +9,7 @@ from flask import (
 from webapp.flaskr.map import bp
 from webapp.flaskr.db import graphdb
 from webapp.flaskr.utils import login_required
-
+import neo4j.exceptions
 
 @bp.route("/", methods=["POST", "GET"])
 @login_required
@@ -17,10 +17,15 @@ def index_view():
     if request.method == "GET":
         return render_template("map/index.html", cities=get_cities())
     else:
-        path = find_shortest_path(request.form["city1"], request.form["city2"])
+        if request.form["city1"] == request.form["city2"]:
+            flash("Please select two different cities!", "danger")
+            return redirect(url_for("map.index_view"))
+
+        path, distance = find_shortest_path(request.form["city1"], request.form["city2"])
         return render_template("map/index.html",
                                cities=get_cities(),
-                               path=path)
+                               path=path,
+                               distance=distance)
 
 
 # View for adding a city
@@ -89,10 +94,41 @@ def connect_cities(city1, city2, distance):
 # find the shortest path between two cities
 def find_shortest_path(city1, city2):
     with graphdb.session() as session:
-        result = session.run(
-            "MATCH (c1:City {name: $city1}), (c2:City {name: $city2}), p = shortestPath((c1)-[:CONNECTED_TO*]-(c2)) "
-            "RETURN p", {
-                "city1": city1,
-                "city2": city2
-            })
-        print(result.single())
+        cmd = """
+        MATCH (source:City {name: "%s"}), (target:City {name: "%s"})
+        CALL gds.shortestPath.dijkstra.stream('highways', {
+            sourceNode: source,
+            targetNode: target,
+            relationshipWeightProperty: 'distance'
+        })
+        YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+        RETURN
+            index,
+            gds.util.asNode(sourceNode).name AS sourceNodeName,
+            gds.util.asNode(targetNode).name AS targetNodeName,
+            totalCost,
+            [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
+            costs,
+            nodes(path) as path
+        ORDER BY index
+        """ % (city1, city2)
+        try:
+            res = session.run(cmd)
+            rec = res.single()
+        # Projection does not exist
+        except neo4j.exceptions.ClientError:
+            res = session.run("""
+            CALL gds.graph.project(
+            'highways',
+            'City',
+            'HIGHWAY',
+            {
+            relationshipProperties: 'distance'
+            }
+            )
+            """)
+            res = session.run(cmd)
+            rec = res.single()
+
+        return [node["name"] for node in rec["path"]], rec["totalCost"]
+
